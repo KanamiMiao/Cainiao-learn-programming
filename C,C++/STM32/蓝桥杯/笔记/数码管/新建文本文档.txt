@@ -1,0 +1,38 @@
+https://blog.csdn.net/qq_53960242/article/details/129323039?spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPosition-2-129323039-blog-114106264.235%5Ev35%5Epc_relevant_anti_vip&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPosition-2-129323039-blog-114106264.235%5Ev35%5Epc_relevant_anti_vip&utm_relevant_index=3
+
+
+#define SER_H HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1,GPIO_PIN_SET)
+#define SER_L HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1,GPIO_PIN_RESET)
+
+#define RCK_H HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2,GPIO_PIN_SET)
+#define RCK_L HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2,GPIO_PIN_RESET)
+
+#define SCK_H HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3,GPIO_PIN_SET)
+#define SCK_L HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3,GPIO_PIN_RESET)
+
+
+//               0     1     2     3      4		5	  6     7     8     9    -    熄灭
+u8 seg_buf[] = { 0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f, 0x40, 0x00,
+//               0.    1.   2.    3.     4.	   5.    6.    7.    8.     9.    -    熄灭	
+				0xbf, 0x86, 0xdb, 0xcf, 0xe6, 0xed, 0xfd, 0x87, 0xff, 0xef, 0x40, 0x00,
+//				A      B     C     D      E      F  熄灭
+				0x77, 0x7c, 0x39, 0x5e, 0x79, 0x71, 0x00 };
+
+
+void seg_disp(u8 seg1,u8 seg2,u8 seg3)
+{
+	u32 seg = (seg_buf[seg3] << 16) | (seg_buf[seg2] << 8) | seg_buf[seg1];
+	int i;
+	for(i = 0; i < 24; i++)
+	{
+		if(seg & 0x800000)
+			SER_H;
+		else
+			SER_L;
+		seg <<= 1;
+		SCK_H;
+		SCK_L;
+	}
+	RCK_H;
+	RCK_L;
+}

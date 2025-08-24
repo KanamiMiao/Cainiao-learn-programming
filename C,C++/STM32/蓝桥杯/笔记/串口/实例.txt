@@ -1,0 +1,55 @@
+#include"string.h"
+
+u8 rx_buf[30],rx_date[2],rx_count;
+
+int fputc(int ch, FILE *f) 
+{
+  HAL_UART_Transmit(&huart1,(u8*)&ch,1,50);
+  return ch;
+}
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	HAL_UART_Receive_IT(&huart1,rx_date,1);
+	rx_buf[rx_count++]=rx_date[0];
+}
+void RX()
+{
+	static u8 buf1[]={"ST"};
+	static u8 buf2[]={"PARA"};
+	static u32 tick;
+	u8 x=1;
+	u8 y=1;
+	if(uwTick-tick<50) return;
+	tick=uwTick;
+	x=memcmp(buf1,rx_buf,2);
+	y=memcmp(buf2,rx_buf,4);
+	if(x==0 & rx_count==6)
+	{
+		printf("$%.2f\r\n",Temp);
+		int i;
+		for(i=0;i<30;i++)
+			rx_buf[i]=0;
+	}
+	if(y==0 & rx_count==8)
+	{
+		printf("#%d,AO%d\r\n",T[0],X[0]);
+		int i;
+		for(i=0;i<30;i++)
+			rx_buf[i]=0;
+	}
+	rx_count=0;
+}
+void TX()
+{
+	if(X[0]==1)
+		V_IN=AO1;
+	else
+		V_IN=AO2;
+	static u32 tick;
+	if(V_IN>zhan_kon_bi*3.3f/100.0f)
+	{
+		if(uwTick-tick<1000) return;
+		tick=uwTick;
+		printf("$%.2f\r\n",Temp);		
+	}
+}

@@ -1,0 +1,29 @@
+EEPROM:
+
+void E2PROM_Write(u8 add,u8 date)//写入
+{
+	I2CStart();
+	I2CSendByte(0xa0);
+	I2CWaitAck();
+	I2CSendByte(add);
+	I2CWaitAck();
+	I2CSendByte(date);
+	I2CWaitAck();
+	I2CStop();
+	HAL_Delay(5);
+}
+u8 E2PROM_Read(u8 add)//读取
+{
+	u8 date;
+	I2CStart();
+	I2CSendByte(0xa0);
+	I2CWaitAck();
+	I2CSendByte(add);
+	I2CWaitAck();
+	I2CStart();
+	I2CSendByte(0xa1);
+	I2CWaitAck();
+	date=I2CReceiveByte();
+	I2CSendNotAck();
+	I2CStop();
+}

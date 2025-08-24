@@ -1,0 +1,19 @@
+float read_temperature(void)
+{
+//	uint16_t temp;
+	u8 temp_h,temp_l;
+	
+	ow_reset();
+	ow_byte_wr(OW_SKIP_ROM);
+	ow_byte_wr(DS18B20_CONVERT);
+	
+	ow_reset();
+	ow_byte_wr(OW_SKIP_ROM);
+	ow_byte_wr(DS18B20_READ);
+	
+	temp_l = ow_byte_rd();
+	temp_h = ow_byte_rd();
+	
+	return ((temp_h << 8) | temp_l) * 0.0625;
+	
+}

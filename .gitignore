@@ -1,0 +1,9 @@
+*.csv
+
+# 忽略所有名为 Drivers 的文件夹
+Drivers/
+**/Drivers/
+
+# 忽略所有名为 MDK-ARM 的文件夹
+MDK-ARM/
+**/MDK-ARM/

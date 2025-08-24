@@ -1,0 +1,4 @@
+https://blog.csdn.net/qq_43715171/article/details/117157770
+
+ARR=1000*1000/频率 -1
+CCR=占空比*(ARR+1)

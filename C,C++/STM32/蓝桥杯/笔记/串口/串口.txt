@@ -1,0 +1,25 @@
+串口：
+
+u8 rx_buf[30],rx_date[2],rx_count;
+#include"string.h"
+
+int fputc(int ch, FILE *f) 
+{
+  HAL_UART_Transmit(&huart1,(u8*)&ch,1,50);
+  return ch;
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	HAL_UART_Receive_IT(&huart1,rx_date,1);
+	rx_buf[rx_count++]=rx_date[0];
+}
+
+HAL_UART_Receive_IT(&huart1,rx_date,1);//串口接受1字符 (放在主函数里)
+
+memcmp(buf1,rx_buf,n);比较两个数组前n位
+strcmp()  //比较两个数组
+
+		int i;
+		for(i=0;i<30;i++)
+			rx_buf[i]=0;（清空数组）
